@@ -20,7 +20,7 @@ async def run_scraping_task(max_pages: int):
 
 # Launch scraper in background
 @router.post("/")
-async def run_scrap(background_tasks: BackgroundTasks, max_pages: int = 2):
+async def run_scrap(background_tasks: BackgroundTasks, max_pages: int = 10):
     try:
         background_tasks.add_task(run_scraping_task, max_pages)
         return {"message": f"Scraper launched in background (max_pages={max_pages})."}
@@ -28,4 +28,3 @@ async def run_scrap(background_tasks: BackgroundTasks, max_pages: int = 2):
         raise HTTPException(
             status_code=500, detail=f"Failed to launch scraper: {str(e)}"
         )
-

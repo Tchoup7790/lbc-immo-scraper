@@ -2,7 +2,7 @@ import pymysql
 import json
 from hashlib import sha256
 from config.settings import DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME
-from pymysql.err import OperationalError
+from pymysql.err import OperationalError, IntegrityError
 from fastapi import HTTPException
 
 
@@ -25,7 +25,14 @@ def anonymize(ad: dict) -> dict:
 
 # Insert ads into MySQL
 def insert_ads_to_db(ads: list[dict]):
+    if not ads:
+        print("No ads to insert.")
+        return
+
     connection = get_connection()
+    inserted = 0
+    skipped = 0
+
     with connection:
         with connection.cursor() as cursor:
             for ad in ads:
@@ -35,23 +42,34 @@ def insert_ads_to_db(ads: list[dict]):
                         zipcode, region, url, author, contact
                     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """
-                cursor.execute(
-                    sql,
-                    (
-                        ad.get("title"),
-                        ad.get("category"),
-                        ad.get("type"),
-                        ad.get("price"),
-                        ad.get("city"),
-                        ad.get("zipcode"),
-                        ad.get("region"),
-                        ad.get("url"),
-                        ad.get("author"),
-                        ad.get("contact"),
-                    ),
-                )
+                try:
+                    cursor.execute(
+                        sql,
+                        (
+                            ad.get("title"),
+                            ad.get("category"),
+                            ad.get("type"),
+                            ad.get("price"),
+                            ad.get("city"),
+                            ad.get("zipcode"),
+                            ad.get("region"),
+                            ad.get("url"),
+                            ad.get("author"),
+                            ad.get("contact"),
+                        ),
+                    )
+                    inserted += 1
+                except IntegrityError:
+                    # URL already exists (UNIQUE constraint)
+                    skipped += 1
+                    continue
+                except Exception as e:
+                    print(f"Error inserting ad: {e}")
+                    continue
+
         connection.commit()
-    print(f"{len(ads)} ads inserted into database.")
+
+    print(f"{inserted} new ads inserted, {skipped} duplicates skipped.")
 
 
 # Simple DB connection

@@ -3,12 +3,14 @@ CREATE TABLE IF NOT EXISTS ads (
     title VARCHAR(255),
     category VARCHAR(100),
     type VARCHAR(100),
-    price INT NULL,
+    price INT,
     city VARCHAR(100),
     zipcode VARCHAR(20),
     region VARCHAR(100),
-    url TEXT,
-    author VARCHAR(64),
+    url VARCHAR(255) NOT NULL,
+    author VARCHAR(100),
     contact VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_url (url)
 );
