@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS ads (
     zipcode VARCHAR(20),
     region VARCHAR(100),
     url VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255),
     author VARCHAR(100),
     contact VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

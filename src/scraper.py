@@ -40,6 +40,7 @@ def parse_ads(data: dict) -> list[dict]:
     for ad in ads:
         location = ad.get("location", {})
         attributes = ad.get("attributes", [])
+        images = ad.get("images", {})
 
         real_estate_type = next(
             (
@@ -66,6 +67,7 @@ def parse_ads(data: dict) -> list[dict]:
                 "zipcode": location.get("zipcode", ""),
                 "region": location.get("region_name", ""),
                 "url": ad.get("url", ""),
+                "image_url": images.get("urls", [None])[0],
                 "author": author_name,
                 "contact": contact_info,
             }

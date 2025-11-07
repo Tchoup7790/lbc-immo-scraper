@@ -32,15 +32,39 @@
 		}
 
 		.ad-card {
-			padding: 0.8rem 1rem;
+			padding: 0.8rem;
 			margin: 0.5rem 0;
 			border: 1px solid #ddd;
 			border-radius: 8px;
 			background: #fafafa;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		.ad-image {
+			width: fit-content;
+			height: 150px;
+			object-fit: scale-down;
+			border-radius: 4px;
+			margin-bottom: 0;
 		}
 
 		.ad-card small {
 			color: #666;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			.ad-card {
+				background: #1e1e1e;
+				border-color: #333;
+			}
+
+			.ad-card small {
+				color: #aaa;
+			}
 		}
 	</style>
 </head>
@@ -102,6 +126,7 @@
 			}
 		}
 
+
 		function renderAds(ads) {
 			adsContainer.innerHTML = '';
 			if (!ads || ads.length === 0) {
@@ -112,15 +137,18 @@
 				const div = document.createElement('div');
 				div.className = 'ad-card';
 				div.innerHTML = `
-					<strong>${ad.title}</strong><br>
-					${ad.price ? `${ad.price} €` : 'Prix non communiqué'} — ${ad.city || 'Ville inconnue'}<br>
-					<small>${ad.category || ''} / ${ad.type || ''}</small><br>
-					<a href="${ad.url}" target="_blank">Voir l'annonce</a>
-				`;
+			<div>
+				<strong>${ad.title}</strong><br>
+				${ad.price ? `${ad.price} €` : 'Prix non communiqué'}	<br>
+			  ${ad.city || 'Ville inconnue'} - ${ad.zipcode || 'CP inconnue'}<br>
+				<small>${ad.category || ''} / ${ad.type || ''}</small><br>
+				<a href="${ad.url}" target="_blank">Voir l'annonce</a>
+			</div>
+			${ad.image_url ? `<img src="${ad.image_url}" alt="${ad.title}" class="ad-image">` : ''}
+					`;
 				adsContainer.appendChild(div);
 			}
 		}
-
 		document.getElementById('scrap-btn').onclick = async () => {
 			messageEl.textContent = 'Scraping en cours...';
 			try {

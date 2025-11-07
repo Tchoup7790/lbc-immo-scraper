@@ -39,8 +39,8 @@ def insert_ads_to_db(ads: list[dict]):
                 sql = """
                     INSERT INTO ads (
                         title, category, type, price, city,
-                        zipcode, region, url, author, contact
-                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                        zipcode, region, url, image_url, author, contact
+                    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 """
                 try:
                     cursor.execute(
@@ -54,6 +54,7 @@ def insert_ads_to_db(ads: list[dict]):
                             ad.get("zipcode"),
                             ad.get("region"),
                             ad.get("url"),
+                            ad.get("image_url"),
                             ad.get("author"),
                             ad.get("contact"),
                         ),
