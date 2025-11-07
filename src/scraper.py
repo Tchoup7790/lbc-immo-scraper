@@ -65,7 +65,7 @@ def parse_ads(data: dict) -> list[dict]:
                 "city": location.get("city", ""),
                 "zipcode": location.get("zipcode", ""),
                 "region": location.get("region_name", ""),
-                "url": location.get("url", ""),
+                "url": ad.get("url", ""),
                 "author": author_name,
                 "contact": contact_info,
             }
