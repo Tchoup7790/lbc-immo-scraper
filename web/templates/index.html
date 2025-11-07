@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Dashboard - Leboncoin Scraper</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1/new.min.css">
+</head>
+
+<body>
+	<main>
+		<h1>LeBonCoin Scraper</h1>
+
+		<section>
+			<h2>Actions</h2>
+			<button id="scrap-btn">Lancer le scrap</button>
+			<p id="message"></p>
+		</section>
+
+		<section>
+			<h2>Filtres</h2>
+			<form id="filter-form">
+				<label>
+					Ville :
+					<input type="text" id="city" name="city" placeholder="ex: Nîmes">
+				</label>
+				<label>
+					Prix min :
+					<input type="number" id="min_price" name="min_price">
+				</label>
+				<label>
+					Prix max :
+					<input type="number" id="max_price" name="max_price">
+				</label>
+				<button type="submit">Appliquer</button>
+			</form>
+		</section>
+
+		<section>
+			<h2>Annonces</h2>
+			<ul id="ads"></ul>
+		</section>
+	</main>
+
+	<script>
+		async function loadAds(filters = {}) {
+			const params = new URLSearchParams(filters).toString();
+			const res = await fetch(`/ads?${params}`);
+			const data = await res.json();
+			const list = document.getElementById('ads');
+			list.innerHTML = '';
+			data.ads.forEach(ad => {
+				const li = document.createElement('li');
+				li.innerHTML = `<strong>${ad.title}</strong> — ${ad.price || '?'} € à ${ad.city}`;
+				list.appendChild(li);
+			});
+		}
+
+		document.getElementById('scrap-btn').onclick = async () => {
+			const res = await fetch('/scrap', {method: 'POST'});
+			const data = await res.json();
+			document.getElementById('message').textContent = data.message;
+			loadAds();
+		};
+
+		document.getElementById('filter-form').onsubmit = (e) => {
+			e.preventDefault();
+			const filters = {
+				city: document.getElementById('city').value,
+				min_price: document.getElementById('min_price').value,
+				max_price: document.getElementById('max_price').value
+			};
+			loadAds(filters);
+		};
+
+		loadAds();
+	</script>
+</body>
+
+</html>
