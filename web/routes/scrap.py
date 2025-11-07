@@ -52,3 +52,8 @@ def run_scrap():
         return {"message": "Scraping started in background."}
     else:
         raise HTTPException(status_code=409, detail="Scraping already in progress")
+
+
+@router.get("/status")
+def scrap_status():
+    return {"scraping": scraping_in_progress}
